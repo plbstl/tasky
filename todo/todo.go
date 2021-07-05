@@ -11,6 +11,7 @@ type Item struct {
 	Priority int
 	Text     string
 	position int
+	Done     bool
 }
 
 // ByPriority implements sort.interface for []Item based on
@@ -43,14 +44,28 @@ func (i *Item) PrintPriority() string {
 	}
 }
 
+func (i *Item) PrintDone() string {
+	if i.Done {
+		// return "☑️"
+		return "✔"
+	}
+	return ""
+}
+
 func (items ByPriority) Len() int {
 	return len(items)
 }
 
 func (items ByPriority) Less(i, j int) bool {
+	// make sure completed items are under in the list
+	if items[i].Done != items[j].Done {
+		return items[j].Done
+	}
+
 	if items[i].Priority != items[j].Priority {
 		return items[i].Priority < items[j].Priority
 	}
+
 	return items[i].position < items[j].position
 }
 

@@ -23,61 +23,56 @@ package cmd
 
 import (
 	"fmt"
-	"os"
+	"log"
 	"sort"
 	"strconv"
-	"text/tabwriter"
 
 	"github.com/paulebose/tasky/todo"
 	"github.com/spf13/cobra"
 )
 
-var (
-	doneOpt, allOpt bool
-)
-
-// listCmd represents the list command
-var listCmd = &cobra.Command{
-	Use:     "list",
-	Aliases: []string{"ls"},
-	Short:   "print out available todos",
-	Long:    `Shows a list of saved todos. By default, it prints out only uncompleted todos.`,
-	Run:     listRun,
+// doneCmd represents the done command
+var doneCmd = &cobra.Command{
+	Use:     "done",
+	Aliases: []string{"do"},
+	Short:   "mark todo as complete",
+	Long:    `Mark a todo as completed.`,
+	Run:     doneRun,
 }
 
 func init() {
-	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(doneCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// doneCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	listCmd.Flags().BoolVar(&doneOpt, "done", false, "show only completed TODOs")
-	listCmd.Flags().BoolVar(&allOpt, "all", false, "show both completed and uncompleted TODOs")
+	// doneCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func listRun(cmd *cobra.Command, args []string) {
+func doneRun(cmd *cobra.Command, args []string) {
+	if len(args) < 1 {
+		log.Fatalln("You must specify the todo you want to mark as complete \n \t tasky done <index>")
+	}
+
 	items, err := todo.ReadItems(dataFile)
 	cobra.CheckErr(err)
 
-	sort.Sort(todo.ByPriority(items))
-
-	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
-	for _, i := range items {
-		if allOpt || i.Done == doneOpt {
-			fmt.Fprintln(
-				w,
-				i.Label()+"\t"+i.PrintPriority()+" "+i.PrintDone()+"\t"+i.Text+"\t",
-			)
-		}
+	i, err := strconv.Atoi(args[0])
+	if err != nil {
+		log.Fatalln(args[0], "is not a valid label \n", err)
 	}
 
-	fmt.Fprintln(w, "- -")
-	fmt.Fprintln(w, strconv.Itoa(len(items))+" total")
-	w.Flush()
+	if i > 0 && i < len(items) {
+		items[i-1].Done = true
+		fmt.Printf("%q %v \n", items[i-1].Text, "marked as done")
+		sort.Sort(todo.ByPriority(items))
+		todo.SaveItems(dataFile, items)
+	} else {
+		log.Println(i, "doesn't match any items")
+	}
 }
