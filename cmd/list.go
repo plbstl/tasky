@@ -41,7 +41,7 @@ var (
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},
-	Short:   "print out available todos",
+	Short:   "print out todos",
 	Long:    `Shows a list of saved todos. By default, it prints out only uncompleted todos.`,
 	Run:     listRun,
 }

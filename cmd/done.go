@@ -36,8 +36,8 @@ import (
 var doneCmd = &cobra.Command{
 	Use:     "done",
 	Aliases: []string{"do"},
-	Short:   "mark todo as complete",
-	Long:    `Mark a todo as completed.`,
+	Short:   "mark a todo as complete",
+	Long:    `Mark a todo as complete.`,
 	Run:     doneRun,
 }
 
