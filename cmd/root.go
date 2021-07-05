@@ -29,13 +29,16 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var (
+	cfgFile, dataFile string
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tasky",
 	Short: "Tasky is a todo application for cli",
-	Long:  `Tasky helps you keep track of your goals. It is designed to be simple and efficient.`,
+	Long: `Tasky helps you keep track of your goals. It is designed to be
+simple and efficient.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -51,11 +54,15 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
+	home, err := os.UserHomeDir()
+	cobra.CheckErr(err)
+
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tasky.yaml)")
+	rootCmd.PersistentFlags().StringVar(&dataFile, "datafile", home+string(os.PathSeparator)+".taskydata.json", "data file to store todos")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().BoolP("toggle", "t", false, "help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
