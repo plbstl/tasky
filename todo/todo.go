@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// Item represents a single todo.
 type Item struct {
 	Priority int
 	Text     string
@@ -18,10 +19,14 @@ type Item struct {
 // the Priority & position fields.
 type ByPriority []Item
 
+// Label returns the position of this todo item in the list,
+// with a period attached.
 func (i *Item) Label() string {
 	return strconv.Itoa(i.position) + "."
 }
 
+// SetPriority changes the priority of this todo item.
+// [high=1, normal=2].
 func (i *Item) SetPriority(p int) {
 	switch p {
 	case 1:
@@ -33,6 +38,8 @@ func (i *Item) SetPriority(p int) {
 	}
 }
 
+// PrintPriority returns an icon representing the priority
+// of this todo item.
 func (i *Item) PrintPriority() string {
 	switch i.Priority {
 	case 1:
@@ -44,6 +51,8 @@ func (i *Item) PrintPriority() string {
 	}
 }
 
+// PrintDone returns an icon representing the completion state
+// of this todo item.
 func (i *Item) PrintDone() string {
 	if i.Done {
 		// return "☑️"
@@ -57,7 +66,7 @@ func (items ByPriority) Len() int {
 }
 
 func (items ByPriority) Less(i, j int) bool {
-	// make sure completed items are under in the list
+	// make sure completed items are under in the list.
 	if items[i].Done != items[j].Done {
 		return items[j].Done
 	}
@@ -73,6 +82,7 @@ func (items ByPriority) Swap(i, j int) {
 	items[i], items[j] = items[j], items[i]
 }
 
+// SaveItems stores todo items to a given file.
 func SaveItems(filename string, items []Item) error {
 	b, err := json.Marshal(items)
 	if err != nil {
@@ -87,10 +97,11 @@ func SaveItems(filename string, items []Item) error {
 	return nil
 }
 
+// ReadItems retrieves todo items from a given file and returns it.
 func ReadItems(filename string, showFileErr bool) ([]Item, error) {
 	b, err := os.ReadFile(filename)
 	if err != nil {
-		// when no need to show error if file does not exist
+		// when no need to show error if file does not exist.
 		if !showFileErr && strings.HasSuffix(err.Error(), "no such file or directory") {
 			return []Item{}, nil
 		}

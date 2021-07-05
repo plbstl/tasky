@@ -37,7 +37,7 @@ var (
 	doneOpt, allOpt bool
 )
 
-// listCmd represents the list command
+// listCmd represents the list command.
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"ls"},

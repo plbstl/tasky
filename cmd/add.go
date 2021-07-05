@@ -31,7 +31,7 @@ import (
 
 var priority int
 
-// addCmd represents the add command
+// addCmd represents the add command.
 var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "create a new todo",

@@ -32,7 +32,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// doneCmd represents the done command
+// doneCmd represents the done command.
 var doneCmd = &cobra.Command{
 	Use:     "done",
 	Aliases: []string{"do"},
@@ -72,7 +72,9 @@ func doneRun(cmd *cobra.Command, args []string) {
 		items[i-1].Done = true
 		fmt.Printf("%q %v \n", items[i-1].Text, "marked as done")
 		sort.Sort(todo.ByPriority(items))
-		todo.SaveItems(viper.GetString("datafile"), items)
+		if err = todo.SaveItems(viper.GetString("datafile"), items); err != nil {
+			log.Fatalln("Cannot bind datafile", err)
+		}
 	} else {
 		log.Println(i, "doesn't match any items")
 	}
