@@ -55,7 +55,7 @@ func init() {
 }
 
 func addRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(viper.GetString("datafile"))
+	items, err := todo.ReadItems(viper.GetString("datafile"), false)
 	cobra.CheckErr(err)
 
 	for _, text := range args {

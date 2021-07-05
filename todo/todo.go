@@ -87,11 +87,11 @@ func SaveItems(filename string, items []Item) error {
 	return nil
 }
 
-func ReadItems(filename string) ([]Item, error) {
+func ReadItems(filename string, showFileErr bool) ([]Item, error) {
 	b, err := os.ReadFile(filename)
 	if err != nil {
-		// if file does not exist, it is not an error
-		if strings.HasSuffix(err.Error(), "no such file or directory") {
+		// when no need to show error if file does not exist
+		if !showFileErr && strings.HasSuffix(err.Error(), "no such file or directory") {
 			return []Item{}, nil
 		}
 		return []Item{}, err

@@ -63,7 +63,7 @@ func init() {
 }
 
 func listRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(viper.GetString("datafile"))
+	items, err := todo.ReadItems(viper.GetString("datafile"), true)
 	cobra.CheckErr(err)
 
 	sort.Sort(todo.ByPriority(items))
