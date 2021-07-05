@@ -29,9 +29,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	cfgFile, dataFile string
-)
+var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -58,7 +56,9 @@ func init() {
 	cobra.CheckErr(err)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.tasky.yaml)")
-	rootCmd.PersistentFlags().StringVar(&dataFile, "datafile", home+string(os.PathSeparator)+".taskydata.json", "data file to store todos")
+
+	rootCmd.PersistentFlags().String("datafile", home+string(os.PathSeparator)+".taskydata.json", "data file to store todos")
+	viper.BindPFlag("datafile", rootCmd.PersistentFlags().Lookup("datafile"))
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -79,6 +79,7 @@ func initConfig() {
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".tasky")
+		viper.SetEnvPrefix("tasky")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

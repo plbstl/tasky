@@ -29,6 +29,7 @@ import (
 
 	"github.com/paulebose/tasky/todo"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // doneCmd represents the done command
@@ -59,7 +60,7 @@ func doneRun(cmd *cobra.Command, args []string) {
 		log.Fatalln("You must specify the todo you want to mark as complete \n \t tasky done <index>")
 	}
 
-	items, err := todo.ReadItems(dataFile)
+	items, err := todo.ReadItems(viper.GetString("datafile"), false)
 	cobra.CheckErr(err)
 
 	i, err := strconv.Atoi(args[0])
@@ -71,7 +72,7 @@ func doneRun(cmd *cobra.Command, args []string) {
 		items[i-1].Done = true
 		fmt.Printf("%q %v \n", items[i-1].Text, "marked as done")
 		sort.Sort(todo.ByPriority(items))
-		todo.SaveItems(dataFile, items)
+		todo.SaveItems(viper.GetString("datafile"), items)
 	} else {
 		log.Println(i, "doesn't match any items")
 	}

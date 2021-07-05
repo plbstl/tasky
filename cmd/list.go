@@ -30,6 +30,7 @@ import (
 
 	"github.com/paulebose/tasky/todo"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -62,7 +63,7 @@ func init() {
 }
 
 func listRun(cmd *cobra.Command, args []string) {
-	items, err := todo.ReadItems(dataFile)
+	items, err := todo.ReadItems(viper.GetString("datafile"))
 	cobra.CheckErr(err)
 
 	sort.Sort(todo.ByPriority(items))
