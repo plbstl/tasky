@@ -24,6 +24,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"text/tabwriter"
 
@@ -57,6 +58,8 @@ func init() {
 func listRun(cmd *cobra.Command, args []string) {
 	items, err := todo.ReadItems(dataFile)
 	cobra.CheckErr(err)
+
+	sort.Sort(todo.ByPriority(items))
 
 	w := tabwriter.NewWriter(os.Stdout, 3, 0, 1, ' ', 0)
 	for _, i := range items {

@@ -13,6 +13,10 @@ type Item struct {
 	position int
 }
 
+// ByPriority implements sort.interface for []Item based on
+// the Priority & position fields.
+type ByPriority []Item
+
 func (i *Item) Label() string {
 	return strconv.Itoa(i.position) + "."
 }
@@ -37,6 +41,21 @@ func (i *Item) PrintPriority() string {
 		// normal
 		return "\u200a"
 	}
+}
+
+func (items ByPriority) Len() int {
+	return len(items)
+}
+
+func (items ByPriority) Less(i, j int) bool {
+	if items[i].Priority != items[j].Priority {
+		return items[i].Priority < items[j].Priority
+	}
+	return items[i].position < items[j].position
+}
+
+func (items ByPriority) Swap(i, j int) {
+	items[i], items[j] = items[j], items[i]
 }
 
 func SaveItems(filename string, items []Item) error {
